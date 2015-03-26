@@ -1,0 +1,9 @@
+{
+    "id" : "SimpleWater",
+    "version" : "0.1.0",
+    "author" : "",
+    "displayName" : "SimpleWater",
+    "description" : "",
+    "dependencies" : [],
+    "isServerSideOnly" : false
+}
