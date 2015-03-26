@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.teraslogy.simplewater.block.entity;
+package org.teraslogy.simpleliquids.block.entity;
 
 import com.google.common.collect.Queues;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -1,9 +1,9 @@
 {
-    "id" : "SimpleWater",
+    "id" : "SimpleLiquids",
     "version" : "0.1.0",
-    "author" : "",
-    "displayName" : "SimpleWater",
-    "description" : "",
+    "author" : "skaldarnar",
+    "displayName" : "SimpleLiquids",
+    "description" : "This module adds simple water propagation to water blocks. \n\n Beware the flooding!",
     "dependencies" : [],
     "isServerSideOnly" : false
 }
