@@ -134,11 +134,11 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
     @Override
     public void update(float delta) {
         timeSinceLastUpdate += delta;
-        if (timeSinceLastUpdate > 0.3f) {
+        if (timeSinceLastUpdate >= 0.3f) {
             for (int i = 0; i < Math.min(waterPositions.size(), MAX_BLOCK_UPDATES); i++) {
                 worldProvider.setBlock(waterPositions.poll(), water);
             }
-            timeSinceLastUpdate = 0.0f;
+            timeSinceLastUpdate -= 0.3f;
         }
     }
 }
