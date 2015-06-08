@@ -1,6 +1,6 @@
 {
     "id" : "SimpleLiquids",
-    "version" : "0.1.0",
+    "version" : "0.1.1-SNAPSHOT",
     "author" : "skaldarnar",
     "displayName" : "SimpleLiquids",
     "description" : "This module adds simple water propagation to water blocks. \n\n Beware the flooding!",
