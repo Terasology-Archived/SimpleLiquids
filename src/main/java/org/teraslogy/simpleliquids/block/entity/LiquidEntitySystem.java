@@ -44,7 +44,7 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
 
     private static Logger logger = LoggerFactory.getLogger(LiquidEntitySystem.class);
 
-    private static int MAX_BLOCK_UPDATES = 500;
+    private static final int MAX_BLOCK_UPDATES = 500;
 
     @In
     private WorldProvider worldProvider;
@@ -55,7 +55,7 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
     private Block water;
 
     private ConcurrentLinkedQueue<Vector3i> waterPositions;
-    private float timeSinceLastUpdate = 0.0f;
+    private float timeSinceLastUpdate;
 
     @Override
     public void initialise() {
@@ -109,18 +109,20 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
             neighborLocation.add(Side.BOTTOM.getVector3i());
             if (worldProvider.isBlockRelevant(neighborLocation)) {
                 neighborBlock = worldProvider.getBlock(neighborLocation);
-                if ((neighborBlock == BlockManager.getAir() || neighborBlock.isSupportRequired()) && !waterPositions.contains(neighborLocation)) { // propagate down
+                if ((neighborBlock == blockManager.getBlock(BlockManager.AIR_ID) || neighborBlock.isSupportRequired()) && !waterPositions.contains(neighborLocation)) {
+                    // propagate down
                     waterPositions.add(neighborLocation);
-                } else if (!neighborBlock.isLiquid() && neighborBlock != BlockManager.getAir()) {   // spread to the sites
-                    for (Side side : Side.horizontalSides()){
+                } else if (!neighborBlock.isLiquid() && neighborBlock != blockManager.getBlock(BlockManager.AIR_ID)) {
+                    // spread to the sites
+                    for (Side side : Side.horizontalSides()) {
                         neighborLocation = new Vector3i(blockLocation);
                         neighborLocation.add(side.getVector3i());
                         if (worldProvider.isBlockRelevant(neighborLocation)) {
                             neighborBlock = worldProvider.getBlock(neighborLocation);
-                            if (neighborBlock == BlockManager.getAir() || neighborBlock.isSupportRequired()) {
+                            if (neighborBlock == blockManager.getBlock(BlockManager.AIR_ID) || neighborBlock.isSupportRequired()) {
                                 Vector3i neighborBottomLocation = new Vector3i(neighborLocation);
                                 neighborBottomLocation.add(Side.BOTTOM.getVector3i());
-                                if (!waterPositions.contains(neighborLocation)){
+                                if (!waterPositions.contains(neighborLocation)) {
                                     waterPositions.add(neighborLocation);
                                 }
                             }
