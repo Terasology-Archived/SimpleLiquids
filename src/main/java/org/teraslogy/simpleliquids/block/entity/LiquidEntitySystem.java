@@ -151,15 +151,15 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
 
     @ReceiveEvent(priority = EventPriority.PRIORITY_NORMAL)
     public void onChunkGenerated(OnChunkGenerated chunkGenerated, EntityRef entity) {
-        chunkWorker(chunkGenerated.getChunkPos(), entity);
+        processChunk(chunkGenerated.getChunkPos(), entity);
     }
 
     @ReceiveEvent(priority = EventPriority.PRIORITY_NORMAL)
     public void onChunkLoaded(OnChunkLoaded chunkLoaded, EntityRef entity) {
-        chunkWorker(chunkLoaded.getChunkPos(), entity);
+        processChunk(chunkLoaded.getChunkPos(), entity);
     }
 
-    public void chunkWorker(Vector3i chunkPos, EntityRef entity) {
+    public void processChunk(Vector3i chunkPos, EntityRef entity) {
         Vector3i worldPos = new Vector3i(chunkPos);
         worldPos.mul(ChunkConstants.SIZE_X, ChunkConstants.SIZE_Y, ChunkConstants.SIZE_Z);
         Vector3i blockPos = new Vector3i();
