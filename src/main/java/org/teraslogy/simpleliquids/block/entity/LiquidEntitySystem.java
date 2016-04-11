@@ -37,7 +37,6 @@ import org.terasology.world.block.BlockComponent;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.ChunkConstants;
 import org.terasology.world.chunks.event.OnChunkGenerated;
-import org.terasology.world.chunks.event.OnChunkLoaded;
 
 /**
  * Event handler for events affecting block entities related to liquids such as water or lava.
@@ -151,15 +150,7 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
 
     @ReceiveEvent(priority = EventPriority.PRIORITY_NORMAL)
     public void onChunkGenerated(OnChunkGenerated chunkGenerated, EntityRef entity) {
-        processChunk(chunkGenerated.getChunkPos(), entity);
-    }
-
-    @ReceiveEvent(priority = EventPriority.PRIORITY_NORMAL)
-    public void onChunkLoaded(OnChunkLoaded chunkLoaded, EntityRef entity) {
-        processChunk(chunkLoaded.getChunkPos(), entity);
-    }
-
-    public void processChunk(Vector3i chunkPos, EntityRef entity) {
+        Vector3i chunkPos = chunkGenerated.getChunkPos();
         Vector3i worldPos = new Vector3i(chunkPos);
         worldPos.mul(ChunkConstants.SIZE_X, ChunkConstants.SIZE_Y, ChunkConstants.SIZE_Z);
         Vector3i blockPos = new Vector3i();
