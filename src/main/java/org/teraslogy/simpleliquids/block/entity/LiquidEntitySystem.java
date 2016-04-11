@@ -35,6 +35,8 @@ import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockComponent;
 import org.terasology.world.block.BlockManager;
+import org.terasology.world.chunks.ChunkConstants;
+import org.terasology.world.chunks.event.OnChunkGenerated;
 
 /**
  * Event handler for events affecting block entities related to liquids such as water or lava.
@@ -53,6 +55,7 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
     private BlockManager blockManager;
 
     private Block water;
+    private Block air;
 
     private ConcurrentLinkedQueue<Vector3i> waterPositions;
     private float timeSinceLastUpdate;
@@ -64,6 +67,7 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
         waterPositions = Queues.newConcurrentLinkedQueue();
 
         water = blockManager.getBlock("core:water");
+        air = blockManager.getBlock(BlockManager.AIR_ID);
     }
 
     @ReceiveEvent(priority = EventPriority.PRIORITY_NORMAL)
@@ -109,10 +113,10 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
             neighborLocation.add(Side.BOTTOM.getVector3i());
             if (worldProvider.isBlockRelevant(neighborLocation)) {
                 neighborBlock = worldProvider.getBlock(neighborLocation);
-                if ((neighborBlock == blockManager.getBlock(BlockManager.AIR_ID) || neighborBlock.isSupportRequired()) && !waterPositions.contains(neighborLocation)) {
+                if ((neighborBlock == air || neighborBlock.isSupportRequired()) && !waterPositions.contains(neighborLocation)) {
                     // propagate down
                     waterPositions.add(neighborLocation);
-                } else if (!neighborBlock.isLiquid() && neighborBlock != blockManager.getBlock(BlockManager.AIR_ID)) {
+                } else if (!neighborBlock.isLiquid() && neighborBlock != air) {
                     // spread to the sites
                     for (Side side : Side.horizontalSides()) {
                         neighborLocation = new Vector3i(blockLocation);
@@ -142,5 +146,37 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
             }
             timeSinceLastUpdate -= 0.3f;
         }
+    }
+
+    @ReceiveEvent(priority = EventPriority.PRIORITY_NORMAL)
+    public void onChunkGenerated(OnChunkGenerated chunkGenerated, EntityRef entity) {
+        Vector3i chunkPos = chunkGenerated.getChunkPos();
+        Vector3i worldPos = new Vector3i(chunkPos);
+        worldPos.mul(ChunkConstants.SIZE_X, ChunkConstants.SIZE_Y, ChunkConstants.SIZE_Z);
+        Vector3i blockPos = new Vector3i();
+        Vector3i testPos = new Vector3i();
+        // scan the chunk, looking for liquid
+        for (int y = ChunkConstants.SIZE_Y - 1; y >= 0; y--) {
+            for (int z = 0; z < ChunkConstants.SIZE_Z; z++) {
+                for (int x = 0; x < ChunkConstants.SIZE_X; x++) {
+                    blockPos.set(x + worldPos.x, y + worldPos.y, z + worldPos.z);
+                    if (worldProvider.getBlock(blockPos).isLiquid()) {
+                        // scan the neighboring blocks
+                        for (Side side : Side.horizontalSides()) {
+                            testPos.set(blockPos.x, blockPos.y, blockPos.z);
+                            testPos.add(side.getVector3i());
+                            // we only do this if we have air next to our liquid
+                            if (worldProvider.getBlock(testPos) == air) {
+                                blockUpdate(new OnChangedBlock(blockPos, water, water), worldProvider.getBlock(blockPos).getEntity());
+                                break; // GET TO THE CHOPPAH!
+                            }
+                        }
+                        // ___.___
+                        //  c00D`=--/
+                    }
+                }
+            }
+        }
+
     }
 }
