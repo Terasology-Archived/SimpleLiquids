@@ -15,7 +15,11 @@
  */
 package org.teraslogy.simpleliquids.block.entity;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,7 +175,8 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
                     blockPos.set(x + worldPos.x, y + worldPos.y, z + worldPos.z);
                     if (worldProvider.getBlock(blockPos).isLiquid()) {
                         // scan the neighboring blocks
-                        for (Side side : Side.horizontalSides()) {
+                        List<Side> scanSides = Lists.newArrayList(Side.LEFT, Side.RIGHT, Side.FRONT, Side.BACK, Side.BOTTOM);
+                        for (Side side : scanSides) {
                             testPos.set(blockPos.x, blockPos.y, blockPos.z);
                             testPos.add(side.getVector3i());
                             // we only do this if we have air next to our liquid
