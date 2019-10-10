@@ -17,10 +17,6 @@ package org.teraslogy.simpleliquids.block.entity;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -42,6 +38,9 @@ import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.ChunkConstants;
 import org.terasology.world.chunks.event.OnChunkGenerated;
 import org.terasology.world.chunks.event.OnChunkLoaded;
+
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Event handler for events affecting block entities related to liquids such as water or lava.
@@ -71,7 +70,7 @@ public class LiquidEntitySystem extends BaseComponentSystem implements UpdateSub
 
         waterPositions = Queues.newConcurrentLinkedQueue();
 
-        water = blockManager.getBlock("core:water");
+        water = blockManager.getBlock("CoreBlocks:Water");
         air = blockManager.getBlock(BlockManager.AIR_ID);
     }
 
